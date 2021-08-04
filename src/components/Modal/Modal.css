@@ -1,0 +1,22 @@
+.Modal-Cont {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	z-index: 10;
+	background-color: #fff;
+	transition: all 0.3s ease;
+	height: 98vh;
+	width: 97vw;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	padding: 5px;
+	box-shadow: rgba(0, 0, 0, 1) 0px 5px 15px;
+}
+
+.ShowModal {
+	transform: scale(1);
+}
+
+.NoShowModal {
+	transform: scale(0);
+}

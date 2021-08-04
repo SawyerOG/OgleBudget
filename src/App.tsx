@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import TopBar from './components/TopBar';
+import NavDrawer from './components/NavDrawer/NavDrawer';
+
+import AddExpenses from './containers/AddExpenses/AddExpenses';
+import AddIncomes from './containers/AddIncomes/AddIncomes';
+
+const App = () => {
+	const [show, setShow] = useState(false);
+	const [selectedLink, setSelectedLink] = useState('Add Expenses');
+
+	return (
+		<>
+			<TopBar toggleDrawer={() => setShow((p) => !p)} />
+			<NavDrawer
+				isShowing={show}
+				toggleDrawer={() => setShow((p) => !p)}
+				selectedLink={selectedLink}
+				setSelectedLink={(link: string) => setSelectedLink(link)}
+			/>
+			<div className='h-100 bg-info'></div>
+			{selectedLink === 'Add Expenses' && <AddExpenses />}
+			{selectedLink === 'Add Incomes' && <AddIncomes />}
+		</>
+	);
+};
 
 export default App;
