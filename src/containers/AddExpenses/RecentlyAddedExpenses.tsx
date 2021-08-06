@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import AddItemButton from '../../components/AddItemButton';
 import CustomToast from '../../components/Alert/Alert';
 import AddModal from '../../components/AddModal';
 
 export interface Expense {
-	category: string;
+	categories: string[];
 	date: Date;
 	note: string;
-	amount: number | undefined;
+	amount: string;
 }
 
 export type Type = 'category' | 'date' | 'note' | 'amount';
 
 const expense = {
-	category: '',
+	categories: [],
 	date: new Date(),
 	note: '',
-	amount: undefined,
+	amount: '',
 };
 
 const categories = ['Grocery', 'Alcohol', 'House Dev', 'Hobbies', 'Mortgage'];
@@ -26,18 +26,36 @@ const RecentlyAddedExpenses = () => {
 	const [curExpense, setCurExpense] = useState<Expense>({ ...expense });
 	const [submitting, setSubmitting] = useState(false);
 	const [showToast, setShowToast] = useState<'success' | 'warning' | ''>('');
+	const [recentExpenses, setRecentExpenses] = useState<Expense[]>([]);
+
+	const cats = useRef([...categories]);
 
 	const updateExpense = (type: Type, value: any) => {
-		setCurExpense((prev) => {
-			const c: Expense = { ...prev };
+		const c: Expense = { ...curExpense };
+
+		//@ts-ignore
+		if (type === 'category') {
+			const cc = [...c.categories];
+			cc.push(value);
+			c.categories = cc;
+			cats.current = cats.current.filter((i) => i !== value);
+		} else {
 			// @ts-ignore
 			c[type] = value;
-			return c;
-		});
+		}
+		setCurExpense(c);
+	};
+
+	const removeCategories = (category: Type) => {
+		const c = { ...curExpense };
+		const cc = [...c.categories].filter((i) => i !== category);
+		c.categories = cc;
+		setCurExpense(c);
 	};
 
 	const closeModal = () => {
 		setShowModal(false);
+		cats.current = [...categories];
 		setCurExpense({ ...expense });
 	};
 
@@ -47,10 +65,11 @@ const RecentlyAddedExpenses = () => {
 		setSubmitting(true);
 		setShowToast('success');
 
-		console.log(curExpense);
-
 		try {
 			setTimeout(() => {
+				cats.current = [...categories];
+				const recEx = [...recentExpenses];
+				recEx.push(curExpense);
 				setShowToast('');
 				setCurExpense({ ...expense });
 				setSubmitting(false);
@@ -69,13 +88,14 @@ const RecentlyAddedExpenses = () => {
 			<AddItemButton title='Add Expense' onClick={() => setShowModal(true)} />
 			<CustomToast variant={'success'} message={showToast} showTime={2000} noshow={noshow} />
 			<AddModal
-				categories={categories}
+				categories={cats.current}
 				item={curExpense}
 				submitting={submitting}
 				updateItem={updateExpense}
 				submit={submitExpense}
 				showModal={showModal}
 				closeModal={closeModal}
+				removeCategories={removeCategories}
 			/>
 			<p className='fs-5'>
 				<u>Recent Expenses</u>

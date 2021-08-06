@@ -15,12 +15,22 @@ interface Props {
 	closeModal: () => void;
 	submit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 	categories?: string[];
+	removeCategories: (_: any) => void;
 	updateItem: (type: Type, e: string | Date) => void;
 	item: Expense;
 	submitting: boolean;
 }
 
-const AddModal: React.FC<Props> = ({ showModal, closeModal, submit, categories, updateItem, item, submitting }) => {
+const AddModal: React.FC<Props> = ({
+	showModal,
+	closeModal,
+	submit,
+	categories,
+	updateItem,
+	item,
+	submitting,
+	removeCategories,
+}) => {
 	return (
 		<Modal show={showModal} title='Add Expense' close={closeModal}>
 			<Form onSubmit={submit}>
@@ -40,6 +50,16 @@ const AddModal: React.FC<Props> = ({ showModal, closeModal, submit, categories, 
 							))}
 					</select>
 				)}
+				{item.categories.length ? (
+					<ul className='list-unstyled'>
+						{item.categories.map((i) => (
+							<li key={i} className='d-flex justify-content-between px-3'>
+								<p>{i}</p>
+								<p onClick={() => removeCategories(i)}>X</p>
+							</li>
+						))}
+					</ul>
+				) : null}
 				<Form.Control
 					size='lg'
 					type='text'
@@ -53,9 +73,12 @@ const AddModal: React.FC<Props> = ({ showModal, closeModal, submit, categories, 
 						aria-label='Amount'
 						type='number'
 						onFocus={(e) => e.target.select()}
-						onChange={(e) => updateItem('amount', e.target.value)}
+						onChange={(e) => updateItem('amount', e.target.value.toString())}
 						value={item.amount || ''}
 						placeholder='0.00'
+						onBlur={(e) =>
+							!e.target.value.includes('.') ? updateItem('amount', e.target.value.toString() + '.00') : null
+						}
 					/>
 				</InputGroup>
 				<div className='text-center'>
@@ -64,7 +87,7 @@ const AddModal: React.FC<Props> = ({ showModal, closeModal, submit, categories, 
 						type='submit'
 						className='w-50'
 						style={{ height: '50px', backgroundColor: '#fff' }}
-						disabled={!item.category || !item.amount}
+						disabled={item.categories.length === 0 || !item.amount}
 					>
 						{submitting ? <Spinner animation='border' variant='success' /> : 'submit expense'}
 					</Button>

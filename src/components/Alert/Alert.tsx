@@ -11,7 +11,6 @@ interface Props {
 let timer: NodeJS.Timer;
 const CustomAlert: React.FC<Props> = ({ message, variant, showTime, noshow }) => {
 	useEffect(() => {
-		console.log(timer, message);
 		if (message) {
 			if (!timer) {
 				console.log('set timer');
