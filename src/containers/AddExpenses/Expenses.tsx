@@ -3,6 +3,8 @@ import AddItemButton from '../../components/AddItemButton';
 import CustomToast from '../../components/Alert/Alert';
 import AddModal from '../../components/AddModal';
 
+import RecentExpenses from './RecentExpenses';
+
 export interface Expense {
 	categories: string[];
 	date: Date;
@@ -21,12 +23,12 @@ const expense = {
 
 const categories = ['Grocery', 'Alcohol', 'House Dev', 'Hobbies', 'Mortgage'];
 
-const RecentlyAddedExpenses = () => {
+const Expenses = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [curExpense, setCurExpense] = useState<Expense>({ ...expense });
 	const [submitting, setSubmitting] = useState(false);
 	const [showToast, setShowToast] = useState<'success' | 'warning' | ''>('');
-	const [recentExpenses, setRecentExpenses] = useState<Expense[]>([]);
+	// const [recentExpenses, setRecentExpenses] = useState<Expense[]>([]);
 
 	const cats = useRef([...categories]);
 
@@ -49,6 +51,8 @@ const RecentlyAddedExpenses = () => {
 	const removeCategories = (category: Type) => {
 		const c = { ...curExpense };
 		const cc = [...c.categories].filter((i) => i !== category);
+
+		cats.current.push(category);
 		c.categories = cc;
 		setCurExpense(c);
 	};
@@ -68,8 +72,8 @@ const RecentlyAddedExpenses = () => {
 		try {
 			setTimeout(() => {
 				cats.current = [...categories];
-				const recEx = [...recentExpenses];
-				recEx.push(curExpense);
+				// const recEx = [...recentExpenses];
+				// recEx.push(curExpense);
 				setShowToast('');
 				setCurExpense({ ...expense });
 				setSubmitting(false);
@@ -96,12 +100,14 @@ const RecentlyAddedExpenses = () => {
 				showModal={showModal}
 				closeModal={closeModal}
 				removeCategories={removeCategories}
+				isExpense={true}
 			/>
 			<p className='fs-5'>
 				<u>Recent Expenses</u>
 			</p>
+			<RecentExpenses />
 		</div>
 	);
 };
 
-export default RecentlyAddedExpenses;
+export default Expenses;

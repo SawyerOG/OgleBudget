@@ -1,14 +1,15 @@
 import React from 'react';
-import Modal from '../components/Modal/Modal';
+import Modal from './Modal/Modal';
 
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
-import { Expense, Type } from '../containers/AddExpenses/RecentlyAddedExpenses';
+import { Expense, Type } from '../containers/AddExpenses/Expenses';
+import { Income } from '../containers/AddIncomes/AddIncomes';
 
-import DP from '../components/Datepicker/DatePicker';
+import DP from './Datepicker/DatePicker';
 
 interface Props {
 	showModal: boolean;
@@ -17,8 +18,9 @@ interface Props {
 	categories?: string[];
 	removeCategories: (_: any) => void;
 	updateItem: (type: Type, e: string | Date) => void;
-	item: Expense;
+	item: Expense | Income;
 	submitting: boolean;
+	isExpense?: boolean;
 }
 
 const AddModal: React.FC<Props> = ({
@@ -30,6 +32,7 @@ const AddModal: React.FC<Props> = ({
 	item,
 	submitting,
 	removeCategories,
+	isExpense,
 }) => {
 	return (
 		<Modal show={showModal} title='Add Expense' close={closeModal}>
@@ -50,7 +53,7 @@ const AddModal: React.FC<Props> = ({
 							))}
 					</select>
 				)}
-				{item.categories.length ? (
+				{isExpense && item.categories.length ? (
 					<ul className='list-unstyled'>
 						{item.categories.map((i) => (
 							<li key={i} className='d-flex justify-content-between px-3'>
@@ -87,7 +90,8 @@ const AddModal: React.FC<Props> = ({
 						type='submit'
 						className='w-50'
 						style={{ height: '50px', backgroundColor: '#fff' }}
-						disabled={item.categories.length === 0 || !item.amount}
+						//@ts-ignore
+						disabled={(item.categories && item.categories.length === 0) || !item.amount}
 					>
 						{submitting ? <Spinner animation='border' variant='success' /> : 'submit expense'}
 					</Button>

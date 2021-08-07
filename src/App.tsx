@@ -4,7 +4,7 @@ import './App.css';
 import TopBar from './components/TopBar';
 import NavDrawer from './components/NavDrawer/NavDrawer';
 
-import AddExpenses from './containers/AddExpenses/AddExpenses';
+import Expenses from './containers/AddExpenses/Expenses';
 import AddIncomes from './containers/AddIncomes/AddIncomes';
 
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
 				setSelectedLink={(link: string) => setSelectedLink(link)}
 			/>
 			<div className='h-100 bg-info'></div>
-			{selectedLink === 'Add Expenses' && <AddExpenses />}
+			{selectedLink === 'Add Expenses' && <Expenses />}
 			{selectedLink === 'Add Incomes' && <AddIncomes />}
 		</>
 	);
