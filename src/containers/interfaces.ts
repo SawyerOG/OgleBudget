@@ -6,10 +6,12 @@ interface Category {
 }
 
 export interface MoneyItem {
-    date: DateTime;
+    date: Date;
     note: string;
-    amount: string;
+    tax: string;
+    total: number;
     categories: Category[];
 }
 
-export type MoneyType = 'category' | 'date' | 'note' | 'amount';
+export type MoneyType = 'category' | 'date' | 'note' | 'tax';
+export type IncomeType = 'Work' | 'Rebate' | 'Coupon' | 'Sale';

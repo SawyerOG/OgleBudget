@@ -1,77 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import Accordion from 'react-bootstrap/Accordion';
+
 import TripleSpinners from '../../components/Spinners/TripleSpinner';
 
 import { MoneyItem } from '../interfaces';
 
 import { DateTime } from 'luxon';
 
+interface Props {
+    updateRecentItems: (items: MoneyItem[]) => void;
+    items: MoneyItem[];
+}
+
 const someItems: MoneyItem[] = [
     {
-        amount: '112.89',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
+        tax: '11.89',
+        categories: [
+            { type: 'Grocery', amount: '56.78' },
+            { type: 'Alcohol', amount: '56.78' },
+        ],
+        date: new Date(),
         note: 'This is a fine note',
+        total: 109.99,
     },
-    { amount: '125.99', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
     {
-        amount: '112.89',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
-        note: 'This is a fine note',
+        tax: '15.99',
+        categories: [{ type: 'Home Dev', amount: '56.78' }],
+        date: new Date(),
+        note: 'Paint and rollers',
+        total: 109.99,
     },
-    { amount: '125.49', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
     {
-        amount: '112.11',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
+        tax: '6.89',
+        categories: [
+            { type: 'Grocery', amount: '56.78' },
+            { type: 'Alcohol', amount: '56.78' },
+        ],
+        date: new Date(),
         note: 'This is a fine note',
+        total: 109.99,
     },
-    { amount: '125.99', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
-    {
-        amount: '114.89',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
-        note: 'This is a fine note',
-    },
-    { amount: '128.49', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
-    {
-        amount: '167.11',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
-        note: 'This is a fine note',
-    },
-    { amount: '185.99', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
-    { amount: '125.49', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
-    {
-        amount: '112.11',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
-        note: 'This is a fine note',
-    },
-    { amount: '125.99', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
-    {
-        amount: '114.89',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
-        note: 'This is a fine note',
-    },
-    { amount: '128.49', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
-    {
-        amount: '167.11',
-        categories: ['Grocery', 'Alcohol'],
-        date: DateTime.now(),
-        note: 'This is a fine note',
-    },
-    { amount: '185.99', categories: ['Home Dev'], date: DateTime.now(), note: 'Paint and rollers' },
 ];
 
-const RecentItems = () => {
-    const [items, setItems] = useState<MoneyItem[]>([]);
-
+const RecentItems: React.FC<Props> = ({ items, updateRecentItems }) => {
     useEffect(() => {
         if (items.length === 0) {
             setTimeout(() => {
-                setItems([...someItems]);
+                updateRecentItems([...someItems]);
             }, 2000);
         }
     }, [items]);
@@ -81,35 +56,47 @@ const RecentItems = () => {
             {items.length === 0 ? (
                 <TripleSpinners />
             ) : (
-                <ul
-                    className='mx-auto border-box'
-                    style={{ maxHeight: 'calc(100vh - 100px)', width: '98%', overflowY: 'auto' }}
+                <Accordion
+                    flush
+                    className='mx-auto bg-none box-sizing'
+                    style={{ maxHeight: 'calc(100vh - 100px)', width: '96%', overflowY: 'auto', outline: 'none' }}
                 >
-                    {items.map((i) => (
-                        <li key={i.amount} className='border border-success rounded fs-6 my-1 shadow-sm'>
-                            <div className='container'>
-                                <div className='row'>
-                                    <div className='col text-start'>
-                                        <p>{i.date.toLocaleString()}</p>
-                                    </div>
-                                    <div className='col text-end'>
-                                        <p>{i.amount}</p>
-                                    </div>
+                    {items.map((i, idx) => (
+                        <Accordion.Item
+                            eventKey={idx.toString()}
+                            key={i.tax}
+                            className='border border-success rounded fs-6 my-1 p-0 shadow-sm bg-none'
+                        >
+                            <Accordion.Header className='row align-middle mx-1'>
+                                <div className='col text-start'>
+                                    <p>{DateTime.fromJSDate(i.date).toLocaleString()}</p>
                                 </div>
-                                <div className='row'>
-                                    <p>{i.note}</p>
+                                <div className='col text-center'>
+                                    <p>{i.total}</p>
                                 </div>
-                                <div className='d-flex'>
+                                <div className='col text-end'>
                                     {i.categories.map((i) => (
-                                        <li key={i} className='mx-1 fs-6 text-info'>
-                                            {i}
-                                        </li>
+                                        <p key={i.type}>{i.type}</p>
                                     ))}
                                 </div>
-                            </div>
-                        </li>
+                            </Accordion.Header>
+                            <Accordion.Body className='p-0 fs-5'>
+                                <p className='ps-2'>{i.note}</p>
+                                <div className='d-flex justify-content-between px-3 text-infotitan'>
+                                    <table className='w-50'>
+                                        {i.categories.map((i) => (
+                                            <tr key={i.amount} className='mx-1 fs-6'>
+                                                <td className='text-info text-start'>{i.type}</td>
+                                                <td className=' text-end'>{i.amount}</td>
+                                            </tr>
+                                        ))}
+                                    </table>
+                                    <p>Tax: {i.tax}</p>
+                                </div>
+                            </Accordion.Body>
+                        </Accordion.Item>
                     ))}
-                </ul>
+                </Accordion>
             )}
         </div>
     );
