@@ -5,6 +5,8 @@ import AddModal from '../../components/Modal/AddModal';
 
 import RecentExpenses from '../RecentItems/RecentItems';
 
+import axios from 'axios';
+
 import { DateTime } from 'luxon';
 import { MoneyItem, MoneyType } from '../interfaces';
 
@@ -90,15 +92,27 @@ const Expenses = () => {
         c.total = total;
 
         try {
-            setTimeout(() => {
-                cats.current = [...categories];
-                const recEx = [...recentExpenses];
-                recEx.push(c);
-                setRecentExpenses(recEx);
-                setShowToast('');
-                setCurExpense({ ...expense });
-                setSubmitting(false);
-            }, 2000);
+            const query = `query hello($val: String!) { hello(val: $val) } `;
+            const fuck = 'herro';
+            const { data, status } = await axios.post(
+                'http://localhost:4000/graphql',
+                JSON.stringify({ query, variables: { val: fuck } }),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            console.log(status);
+            console.log(data);
+
+            cats.current = [...categories];
+            const recEx = [...recentExpenses];
+            recEx.push(c);
+            setRecentExpenses(recEx);
+            setShowToast('');
+            setCurExpense({ ...expense });
+            setSubmitting(false);
         } catch (err) {
             console.log(err);
         }

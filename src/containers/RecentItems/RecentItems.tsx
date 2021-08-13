@@ -16,8 +16,8 @@ const someItems: MoneyItem[] = [
     {
         tax: '11.89',
         categories: [
-            { type: 'Grocery', amount: '56.78' },
-            { type: 'Alcohol', amount: '56.78' },
+            { type: 'Grocery', amount: '56.75' },
+            { type: 'Alcohol', amount: '56.76' },
         ],
         date: new Date(),
         note: 'This is a fine note',
@@ -25,7 +25,7 @@ const someItems: MoneyItem[] = [
     },
     {
         tax: '15.99',
-        categories: [{ type: 'Home Dev', amount: '56.78' }],
+        categories: [{ type: 'Home Dev', amount: '56.77' }],
         date: new Date(),
         note: 'Paint and rollers',
         total: 109.99,
@@ -34,7 +34,7 @@ const someItems: MoneyItem[] = [
         tax: '6.89',
         categories: [
             { type: 'Grocery', amount: '56.78' },
-            { type: 'Alcohol', amount: '56.78' },
+            { type: 'Alcohol', amount: '56.79' },
         ],
         date: new Date(),
         note: 'This is a fine note',
@@ -84,12 +84,14 @@ const RecentItems: React.FC<Props> = ({ items, updateRecentItems }) => {
                                 <p className='ps-2'>{i.note}</p>
                                 <div className='d-flex justify-content-between px-3 text-infotitan'>
                                     <table className='w-50'>
-                                        {i.categories.map((i) => (
-                                            <tr key={i.amount} className='mx-1 fs-6'>
-                                                <td className='text-info text-start'>{i.type}</td>
-                                                <td className=' text-end'>{i.amount}</td>
-                                            </tr>
-                                        ))}
+                                        <tbody>
+                                            {i.categories.map((i) => (
+                                                <tr key={i.amount} className='mx-1 fs-6'>
+                                                    <td className='text-info text-start'>{i.type}</td>
+                                                    <td className=' text-end'>{i.amount}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
                                     </table>
                                     <p>Tax: {i.tax}</p>
                                 </div>
