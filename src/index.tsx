@@ -6,6 +6,9 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+import axios from 'axios';
+axios.defaults.baseURL = 'http://localhost:4000/api';
+
 ReactDOM.render(
 	<React.StrictMode>
 		<App />
