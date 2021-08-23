@@ -4,52 +4,58 @@ import Accordion from 'react-bootstrap/Accordion';
 import TripleSpinners from '../../components/Spinners/TripleSpinner';
 
 import { MoneyItem } from '../interfaces';
-
 import { DateTime } from 'luxon';
+import axios from 'axios';
 
 interface Props {
+    pageType: 'expense' | 'income';
     updateRecentItems: (items: MoneyItem[]) => void;
     items: MoneyItem[];
 }
 
-const someItems: MoneyItem[] = [
-    {
-        tax: '11.89',
-        categories: [
-            { type: 'Grocery', amount: '56.75' },
-            { type: 'Alcohol', amount: '56.76' },
-        ],
-        date: new Date(),
-        note: 'This is a fine note',
-        total: 109.99,
-    },
-    {
-        tax: '15.99',
-        categories: [{ type: 'Home Dev', amount: '56.77' }],
-        date: new Date(),
-        note: 'Paint and rollers',
-        total: 109.99,
-    },
-    {
-        tax: '6.89',
-        categories: [
-            { type: 'Grocery', amount: '56.78' },
-            { type: 'Alcohol', amount: '56.79' },
-        ],
-        date: new Date(),
-        note: 'This is a fine note',
-        total: 109.99,
-    },
-];
+// const someItems: MoneyItem[] = [
+//     {
+//         tax: '11.89',
+//         categories: [
+//             { type: 'Grocery', amount: '56.75' },
+//             { type: 'Alcohol', amount: '56.76' },
+//         ],
+//         date: new Date(),
+//         note: 'This is a fine note',
+//         total: 109.99,
+//     },
+//     {
+//         tax: '15.99',
+//         categories: [{ type: 'Home Dev', amount: '56.77' }],
+//         date: new Date(),
+//         note: 'Paint and rollers',
+//         total: 109.99,
+//     },
+//     {
+//         tax: '6.89',
+//         categories: [
+//             { type: 'Grocery', amount: '56.78' },
+//             { type: 'Alcohol', amount: '56.79' },
+//         ],
+//         date: new Date(),
+//         note: 'This is a fine note',
+//         total: 109.99,
+//     },
+// ];
 
-const RecentItems: React.FC<Props> = ({ items, updateRecentItems }) => {
+const RecentItems: React.FC<Props> = ({ items, updateRecentItems, pageType }) => {
     useEffect(() => {
-        if (items.length === 0) {
-            setTimeout(() => {
-                updateRecentItems([...someItems]);
-            }, 2000);
-        }
-    }, [items]);
+        axios
+            .get('/expenses/getRecentExpenses')
+            .then((res) => {
+                if (res.status === 200) {
+                    console.log(res.data);
+
+                    updateRecentItems(res.data);
+                }
+            })
+            .catch((err) => console.error(err));
+    }, []);
 
     return (
         <div>
@@ -63,13 +69,13 @@ const RecentItems: React.FC<Props> = ({ items, updateRecentItems }) => {
                 >
                     {items.map((i, idx) => (
                         <Accordion.Item
-                            eventKey={idx.toString()}
+                            eventKey={i.id}
                             key={i.tax}
                             className='border border-success rounded fs-6 my-1 p-0 shadow-sm bg-none'
                         >
                             <Accordion.Header className='row align-middle mx-1'>
                                 <div className='col text-start'>
-                                    <p>{DateTime.fromJSDate(i.date).toLocaleString()}</p>
+                                    <p>{DateTime.fromJSDate(new Date(i.date)).toLocaleString()}</p>
                                 </div>
                                 <div className='col text-center'>
                                     <p>{i.total}</p>
@@ -105,3 +111,5 @@ const RecentItems: React.FC<Props> = ({ items, updateRecentItems }) => {
 };
 
 export default RecentItems;
+
+// db.expenses.find({ categories: { $all: [{ $elemMatch: { type: 'Grocery' } }] } });

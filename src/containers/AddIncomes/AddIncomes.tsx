@@ -9,6 +9,7 @@ import RecentItems from '../RecentItems/RecentItems';
 import { MoneyItem, MoneyType } from '../interfaces';
 
 const income = {
+    id: '',
     date: new Date(),
     note: '',
     tax: '',
@@ -124,7 +125,7 @@ const AddIncomes = () => {
                 updateCategoryAmt={updateCategoryAmt}
                 title='income'
             />
-            <RecentItems updateRecentItems={setIncomes} items={recentIncomes} />
+            <RecentItems updateRecentItems={setIncomes} items={recentIncomes} pageType='income' />
         </div>
     );
 };
