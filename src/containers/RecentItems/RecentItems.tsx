@@ -111,5 +111,3 @@ const RecentItems: React.FC<Props> = ({ items, updateRecentItems, pageType }) =>
 };
 
 export default RecentItems;
-
-// db.expenses.find({ categories: { $all: [{ $elemMatch: { type: 'Grocery' } }] } });
