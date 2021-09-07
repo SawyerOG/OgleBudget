@@ -1,65 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 
 import TripleSpinners from '../../components/Spinners/TripleSpinner';
 
-import { MoneyItem } from '../interfaces';
-import { DateTime } from 'luxon';
-import axios from 'axios';
+import { ExpenseObj, Expense } from '../AddExpenses/Expenses';
 
 interface Props {
     pageType: 'expense' | 'income';
-    updateRecentItems: (items: MoneyItem[]) => void;
-    items: MoneyItem[];
+    items: ExpenseObj | null;
 }
 
-// const someItems: MoneyItem[] = [
-//     {
-//         tax: '11.89',
-//         categories: [
-//             { type: 'Grocery', amount: '56.75' },
-//             { type: 'Alcohol', amount: '56.76' },
-//         ],
-//         date: new Date(),
-//         note: 'This is a fine note',
-//         total: 109.99,
-//     },
-//     {
-//         tax: '15.99',
-//         categories: [{ type: 'Home Dev', amount: '56.77' }],
-//         date: new Date(),
-//         note: 'Paint and rollers',
-//         total: 109.99,
-//     },
-//     {
-//         tax: '6.89',
-//         categories: [
-//             { type: 'Grocery', amount: '56.78' },
-//             { type: 'Alcohol', amount: '56.79' },
-//         ],
-//         date: new Date(),
-//         note: 'This is a fine note',
-//         total: 109.99,
-//     },
-// ];
-
-const RecentItems: React.FC<Props> = ({ items, updateRecentItems, pageType }) => {
-    useEffect(() => {
-        axios
-            .get('/expenses/getRecentExpenses')
-            .then((res) => {
-                if (res.status === 200) {
-                    console.log(res.data);
-
-                    updateRecentItems(res.data);
-                }
-            })
-            .catch((err) => console.error(err));
-    }, []);
-
+const RecentItems: React.FC<Props> = ({ items, pageType }) => {
     return (
         <div>
-            {items.length === 0 ? (
+            {items === null ? (
                 <TripleSpinners />
             ) : (
                 <Accordion
@@ -67,40 +21,40 @@ const RecentItems: React.FC<Props> = ({ items, updateRecentItems, pageType }) =>
                     className='mx-auto bg-none box-sizing'
                     style={{ maxHeight: 'calc(100vh - 100px)', width: '96%', overflowY: 'auto', outline: 'none' }}
                 >
-                    {items.map((i, idx) => (
+                    {Object.keys(items).map((i, idx) => (
                         <Accordion.Item
-                            eventKey={i.id}
-                            key={i.tax}
+                            eventKey={i}
+                            key={i}
                             className='border border-success rounded fs-6 my-1 p-0 shadow-sm bg-none'
                         >
                             <Accordion.Header className='row align-middle mx-1'>
                                 <div className='col text-start'>
-                                    <p>{DateTime.fromJSDate(new Date(i.date)).toLocaleString()}</p>
+                                    <p>{items[i].date}</p>
                                 </div>
                                 <div className='col text-center'>
-                                    <p>{i.total}</p>
+                                    <p>{items[i].total}</p>
                                 </div>
-                                <div className='col text-end'>
-                                    {i.categories.map((i) => (
-                                        <p key={i.type}>{i.type}</p>
+                                <div className='col txt-end'>
+                                    {items[i].expenseTypes.map((ii: string, idx: number) => (
+                                        <p key={i + ii + idx}>{ii}</p>
                                     ))}
                                 </div>
                             </Accordion.Header>
                             <Accordion.Body className='p-0 fs-5'>
-                                <p className='ps-2'>{i.note}</p>
-                                <div className='d-flex justify-content-between px-3 text-infotitan'>
+                                <div className='d-flex justify-content-between align-items-center px-3 mt-1 text-info'>
                                     <table className='w-50'>
                                         <tbody>
-                                            {i.categories.map((i) => (
-                                                <tr key={i.amount} className='mx-1 fs-6'>
-                                                    <td className='text-info text-start'>{i.type}</td>
-                                                    <td className=' text-end'>{i.amount}</td>
+                                            {items[i].expenses.map((ii: Expense) => (
+                                                <tr key={ii.type} className='mx-1 fs-6'>
+                                                    <td className='text-info text-start'>{ii.type}</td>
+                                                    <td className=' text-end'>{ii.amount}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
-                                    <p>Tax: {i.tax}</p>
+                                    <p>Tax: {items[i].tax}</p>
                                 </div>
+                                <p className='ps-2'>{items[i].note}</p>
                             </Accordion.Body>
                         </Accordion.Item>
                     ))}

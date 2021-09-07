@@ -30,3 +30,12 @@
 .NoShow {
     transform: translateX(-100%);
 }
+
+.ShowDrop {
+    transform: translateX(0%) rotate(90deg);
+    width: 100vh;
+}
+
+.NoShowDrop {
+    transform: translateX(-100%) rotate(0deg);
+}
