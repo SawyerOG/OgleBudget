@@ -13,8 +13,6 @@ const AlertContextProvider: React.FC = ({ children }) => {
     const [show, setShow] = useState({ message: '', variant: '' });
 
     const showAlert = (message: string, variant: Variant) => {
-        console.log(message);
-
         setShow({ message: message, variant: variant });
     };
 

@@ -100,7 +100,20 @@ const Incomes = () => {
                 return;
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
+        }
+    };
+
+    const deleteIncome = async (ID: number) => {
+        try {
+            await axios.delete(`/incomes/deleteIncome/${ID}`);
+
+            const c = [...recentIncomes];
+            const newC = c.filter((i) => i.ID !== ID);
+
+            setRecentIncomes(newC);
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -117,7 +130,7 @@ const Incomes = () => {
                 types={incomeTypes.current.types}
             />
             <AddItemButton title='Income' onClick={() => setShowModal(true)} />
-            <RecentIncome items={recentIncomes} />
+            <RecentIncome items={recentIncomes} deleteIncome={deleteIncome} />
         </div>
     );
 };

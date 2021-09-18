@@ -8,9 +8,10 @@ import { IncomingIncome } from './Incomes';
 
 interface Props {
     items: IncomingIncome[] | null;
+    deleteIncome: (ID: number) => void;
 }
 
-const RecentIncome: React.FC<Props> = ({ items }) => {
+const RecentIncome: React.FC<Props> = ({ items, deleteIncome }) => {
     return (
         <>
             {items === null ? (
@@ -35,7 +36,7 @@ const RecentIncome: React.FC<Props> = ({ items }) => {
                             <Accordion.Body className='p-0 fs-5'>
                                 <div className='d-flex justify-content-between align-items-center px-3 mt-1 text-info'>
                                     <p>Tax: {i.tax}</p>
-                                    <Trash style={{ fill: '#e85c5c' }} onClick={() => console.log(i.ID)} />
+                                    <Trash style={{ fill: '#e85c5c' }} onClick={() => deleteIncome(i.ID)} />
                                 </div>
                                 <p className='ps-2'>{i.note}</p>
                             </Accordion.Body>

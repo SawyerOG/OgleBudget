@@ -177,7 +177,7 @@ const Expenses = () => {
             setCurExpense({ ...expense });
             setSubmitting(false);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     };
 
@@ -192,7 +192,7 @@ const Expenses = () => {
                 setRecentExpenses(newC);
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     };
 
