@@ -11,14 +11,14 @@ interface Props {
 
 const DP: React.FC<Props> = ({ label, selectedDate, setDate }) => {
     return (
-        <div className=''>
+        <>
             <label className='fs-6 px-3'>{label} date</label>
             <DatePicker
                 onChange={(e: Date) => setDate(e)}
                 selected={selectedDate}
                 className='text-center p-1 border-1'
             />
-        </div>
+        </>
     );
 };
 

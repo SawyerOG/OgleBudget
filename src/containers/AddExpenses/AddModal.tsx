@@ -1,19 +1,19 @@
 import React from 'react';
-import Modal from './Modal';
+import Modal from '../../components/Modal/Modal';
 
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
-import { ExpenseTypes, IncomingExpense, Expense } from '../../containers/AddExpenses/Expenses';
+import { ExpenseTypes, IncomingExpense, Expense } from './Expenses';
 
-import DP from '../Datepicker/DatePicker';
+import DP from '../../components/Datepicker/DatePicker';
 
 interface Props {
     showModal: boolean;
     closeModal: () => void;
-    // submit: (e: React.FormEvent<HTMLFormElement>, total: number) => Promise<void>;
+    submit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
     categories: ExpenseTypes | null;
     removeCategory: (type: string) => void;
     updateNewExpense: (type: any, e: any, index?: number) => void;
@@ -26,18 +26,17 @@ interface Props {
 const AddModal: React.FC<Props> = ({
     showModal,
     closeModal,
-    // submit,
+    submit,
     categories,
     updateNewExpense,
     item,
     submitting,
     removeCategory,
     title,
-    // updateCategoryAmt,
 }) => {
     return (
         <Modal show={showModal} title={`Add ${title}`} close={closeModal}>
-            <Form onSubmit={(e) => console.log('submit')}>
+            <Form onSubmit={(e) => submit(e)} className='text-center'>
                 <DP
                     selectedDate={item.date}
                     setDate={(date: Date) => updateNewExpense('date', date)}
@@ -98,22 +97,19 @@ const AddModal: React.FC<Props> = ({
                     size='lg'
                     type='text'
                     placeholder={`${title} note`}
-                    value={item.note}
+                    value={item.note.toString()}
                     onChange={(e) => updateNewExpense('note', e.target.value)}
                 />
-                <p className='text-info fs-6'>Total: {item.total}</p>
-                <div className='text-center'>
-                    <Button
-                        variant='outline-success'
-                        type='submit'
-                        className='w-50'
-                        style={{ height: '50px', backgroundColor: '#fff' }}
-                        //@ts-ignore
-                        disabled={item.categories && item.categories.length === 0}
-                    >
-                        {submitting ? <Spinner animation='border' variant='success' /> : `submit ${title}`}
-                    </Button>
-                </div>
+                <p className='text-info text-start fs-6'>Total: {!isNaN(item.total) ? item.total : '--'}</p>
+                <Button
+                    variant='outline-success'
+                    type='submit'
+                    className='w-50 mt-5'
+                    style={{ height: '50px', backgroundColor: '#fff' }}
+                    disabled={item.expenses.length === 0 || item.total === 0 || isNaN(item.total)}
+                >
+                    {submitting ? <Spinner animation='border' variant='success' /> : `submit ${title}`}
+                </Button>
             </Form>
         </Modal>
     );

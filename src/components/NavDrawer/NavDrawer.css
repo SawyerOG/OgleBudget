@@ -21,6 +21,11 @@
     transition-property: transform;
     transition-delay: 0.1s;
     z-index: 99;
+    overflow-y: hidden;
+}
+
+.Name {
+    z-index: 100;
 }
 
 .Show {
@@ -32,10 +37,9 @@
 }
 
 .ShowDrop {
-    transform: translateX(0%) rotate(90deg);
-    width: 100vh;
+    transform: translateX(0%);
 }
 
 .NoShowDrop {
-    transform: translateX(-100%) rotate(0deg);
+    transform: translateX(-100%);
 }

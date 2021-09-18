@@ -6,14 +6,18 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+import AlertContextProvider from './components/Alert/AlertContext';
+
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:4000/api';
 
 ReactDOM.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>,
-	document.getElementById('root')
+    <React.StrictMode>
+        <AlertContextProvider>
+            <App />
+        </AlertContextProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

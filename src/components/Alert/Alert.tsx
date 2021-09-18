@@ -1,32 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import Alert from 'react-bootstrap/Alert';
 
-interface Props {
-    message: string;
-    variant: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark' | '';
-    showTime: number;
-    noshow: () => void;
-}
+import { AlertContext } from './AlertContext';
 
-let timer: NodeJS.Timer;
-const CustomAlert: React.FC<Props> = ({ message, variant, showTime, noshow }) => {
-    useEffect(() => {
-        if (message) {
-            if (!timer) {
-                timer = setTimeout(() => {
-                    noshow();
-                }, showTime);
-            }
-        }
-    }, [message, noshow, variant, showTime]);
+const CustomAlert: React.FC = () => {
+    const alert = useContext(AlertContext);
 
     return (
         <Alert
-            className={`position-absolute w-100 ${message ? '' : 'd-none'}`}
-            style={{ top: '15px', zIndex: 100 }}
-            variant={variant}
+            className={`position-absolute w-100 text-center`}
+            style={{ top: '15px', zIndex: 1080 }}
+            variant={alert.variant}
+            onClose={() => alert.hideAlert()}
+            dismissible
+            show={alert.message ? true : false}
+            transition
         >
-            {message}
+            {alert.message}
         </Alert>
     );
 };

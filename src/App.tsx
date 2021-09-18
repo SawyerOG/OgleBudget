@@ -4,12 +4,15 @@ import './App.css';
 import TopBar from './components/TopBar';
 import NavDrawer from './components/NavDrawer/NavDrawer';
 
+import Alert from './components/Alert/Alert';
+
 import Expenses from './containers/AddExpenses/Expenses';
-// import AddIncomes from './containers/AddIncomes/AddIncomes';
+import AddIncomes from './containers/AddIncomes/Incomes';
+import MonthlyRundown from './containers/MonthlyRundown/MonthlyRundown';
 
 const App = () => {
-    const [show, setShow] = useState(false);
-    const [selectedLink, setSelectedLink] = useState('Add Expenses');
+    const [show, setShow] = useState(true);
+    const [selectedLink, setSelectedLink] = useState('');
 
     return (
         <>
@@ -20,9 +23,11 @@ const App = () => {
                 selectedLink={selectedLink}
                 setSelectedLink={(link: string) => setSelectedLink(link)}
             />
+            <Alert />
             {/* <div className='h-100 bg-info'></div> */}
             {selectedLink === 'Add Expenses' && <Expenses />}
-            {/* {selectedLink === 'Add Incomes' && <AddIncomes />} */}
+            {selectedLink === 'Add Incomes' && <AddIncomes />}
+            {selectedLink === 'Monthly Rundown' && <MonthlyRundown />}
         </>
     );
 };

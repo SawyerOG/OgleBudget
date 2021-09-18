@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import AddItemButton from '../../components/AddItemButton';
-import AddModal from '../../components/Modal/AddModal';
+import AddModal from './AddModal';
 // import CustomToast from '../../components/Alert/Alert';
 
-import RecentExpenses from '../RecentItems/RecentItems';
+import { AlertContext } from '../../components/Alert/AlertContext';
+
+import RecentExpenses from './RecentItems';
 
 import axios from 'axios';
 
@@ -24,10 +26,10 @@ export interface IncomingExpense {
     expenseTypes: string[] | [];
 }
 
-export interface ExpenseObj {
-    groupID: IncomingExpense;
-    [key: string]: IncomingExpense;
-}
+// export interface ExpenseObj {
+//     groupID: IncomingExpense;
+//     [key: string]: IncomingExpense;
+// }
 
 export interface ExpenseTypes {
     type: number;
@@ -36,7 +38,7 @@ export interface ExpenseTypes {
 
 interface ExpensePayload {
     expenseTypes: ExpenseTypes;
-    expenses: ExpenseObj;
+    expenses: IncomingExpense[];
     maxGroupID: number;
 }
 
@@ -53,13 +55,14 @@ const expense = {
 const Expenses = () => {
     const [showModal, setShowModal] = useState(false);
     const [curExpense, setCurExpense] = useState<IncomingExpense>({ ...expense });
-    // const [submitting, setSubmitting] = useState(false);
-    // const [showToast, setShowToast] = useState<'success' | 'warning' | ''>('');
-    const [recentExpenses, setRecentExpenses] = useState<ExpenseObj | null>(null);
+    const [submitting, setSubmitting] = useState(false);
+    const [recentExpenses, setRecentExpenses] = useState<IncomingExpense[]>([]);
 
     const cats = useRef<ExpenseTypes | null>(null);
     const availableCats = useRef<ExpenseTypes | null>(null);
     const groupID = useRef<number>(0);
+
+    const alert = useContext(AlertContext);
 
     useEffect(() => {
         axios
@@ -104,20 +107,24 @@ const Expenses = () => {
                 expC[index!].amount = value;
 
                 for (let i = 0; i < expC.length; i++) {
-                    amts += expC[i].amount;
+                    amts += expC[i].amount || 0;
                 }
 
-                c.total = amts;
+                c.total = parseFloat(amts.toFixed(2));
                 c.expenses = expC;
                 setCurExpense(c);
                 break;
             case 'tax':
                 c.tax = value;
+                if (value[0] === '0') {
+                    c.tax = value[1];
+                }
+
                 amts = value;
                 for (let i = 0; i < c.expenses.length; i++) {
-                    amts += c.expenses[i].amount;
+                    amts += c.expenses[i].amount || 0;
                 }
-                c.total = amts;
+                c.total = parseFloat(amts.toFixed(2));
                 setCurExpense(c);
                 break;
             default:
@@ -147,27 +154,64 @@ const Expenses = () => {
         setCurExpense(expC);
     };
 
-    // const noshow = () => {
-    //     setShowToast('');
-    // };
+    const submitExpense = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const { data } = await axios.post('/expenses/createExpense', curExpense);
+            alert.showAlert('Expense Added', 'success');
+
+            const ce = { ...curExpense };
+
+            const c = [...recentExpenses];
+
+            ce.groupID = data.groupID;
+            ce.date = data.newDate;
+            c.push(ce);
+
+            const freshCats = { ...cats.current };
+            //@ts-ignore
+            availableCats.current = freshCats;
+
+            setRecentExpenses(c);
+            setCurExpense({ ...expense });
+            setSubmitting(false);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const deleteExpense = async (ID: number) => {
+        try {
+            const { status } = await axios.delete(`/expenses/delete/${ID}`);
+
+            if (status === 200) {
+                const c = [...recentExpenses];
+                const newC = c.filter((i) => i.groupID !== ID);
+
+                setRecentExpenses(newC);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <div className='fs-5'>
-            <AddItemButton title='Add Expense' onClick={() => setShowModal(true)} />
-            {/* <CustomToast variant={'success'} message={showToast} showTime={2000} noshow={noshow} /> */}
+            <AddItemButton title='Expense' onClick={() => setShowModal(true)} />
             <AddModal
                 categories={availableCats.current}
                 item={curExpense}
-                submitting={true}
+                submitting={submitting}
                 updateNewExpense={updateNewExpense}
                 // updateCategoryAmt={updateCategoryAmt}
-                // submit={submitExpense}
+                submit={submitExpense}
                 showModal={showModal}
                 closeModal={() => setShowModal(false)}
                 removeCategory={removeCategory}
-                title='expense'
+                title='Expense'
             />
-            <RecentExpenses items={recentExpenses} pageType='expense' />
+            <RecentExpenses items={recentExpenses} pageType='expense' deleteExpense={deleteExpense} />
         </div>
     );
 };

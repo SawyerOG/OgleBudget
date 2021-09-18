@@ -14,7 +14,7 @@ interface LinkProps {
     select: (link: string) => void;
 }
 
-const links = ['Add Expenses', 'Add Incomes', 'Edit Expense Categories', 'Monthly Run Down'];
+const links = ['Add Expenses', 'Add Incomes', 'Edit Expense Categories', 'Monthly Rundown'];
 
 const Link: React.FC<LinkProps> = ({ link, isSelected, select }) => (
     <p className={`${isSelected ? 'text-success' : 'text-info'} fs-5`} onClick={() => select(link)}>
@@ -32,7 +32,7 @@ const NavDrawer: React.FC<Props> = ({ isShowing, selectedLink, setSelectedLink, 
         <>
             <div className={`Backdrop ${isShowing ? 'ShowDrop' : 'NoShowDrop'}`} onClick={toggleDrawer} />
             <div
-                className={`NavDrawer-Cont text-center pt-4 border-end border-info border-2 ${
+                className={`NavDrawer-Cont text-center pt-4 border-end border-info border-3 ${
                     isShowing ? 'Show' : 'NoShow'
                 }`}
             >
