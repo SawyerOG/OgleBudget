@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import './App.css';
 
 import TopBar from './components/TopBar';
@@ -6,9 +6,10 @@ import NavDrawer from './components/NavDrawer/NavDrawer';
 
 import Alert from './components/Alert/Alert';
 
-import Expenses from './containers/AddExpenses/Expenses';
-import AddIncomes from './containers/AddIncomes/Incomes';
-import MonthlyRundown from './containers/MonthlyRundown/MonthlyRundown';
+const Expenses = lazy(() => import('./containers/AddExpenses/Expenses'));
+const AddIncomes = lazy(() => import('./containers/AddIncomes/Incomes'));
+const EditCategory = lazy(() => import('./containers/EditCategory/EditCats'));
+const MonthlyRundown = lazy(() => import('./containers/MonthlyRundown/MonthlyRundown'));
 
 const App = () => {
     const [show, setShow] = useState(true);
@@ -24,10 +25,12 @@ const App = () => {
                 setSelectedLink={(link: string) => setSelectedLink(link)}
             />
             <Alert />
-            {/* <div className='h-100 bg-info'></div> */}
-            {selectedLink === 'Add Expenses' && <Expenses />}
-            {selectedLink === 'Add Incomes' && <AddIncomes />}
-            {selectedLink === 'Monthly Rundown' && <MonthlyRundown />}
+            <Suspense fallback={<div>Loading...</div>}>
+                {selectedLink === 'Add Expenses' && <Expenses />}
+                {selectedLink === 'Add Incomes' && <AddIncomes />}
+                {selectedLink === 'Edit Categories' && <EditCategory />}
+                {selectedLink === 'Monthly Rundown' && <MonthlyRundown />}
+            </Suspense>
         </>
     );
 };

@@ -14,7 +14,7 @@ interface LinkProps {
     select: (link: string) => void;
 }
 
-const links = ['Add Expenses', 'Add Incomes', 'Edit Expense Categories', 'Monthly Rundown'];
+const links = ['Add Expenses', 'Add Incomes', 'Edit Categories', 'Monthly Rundown'];
 
 const Link: React.FC<LinkProps> = ({ link, isSelected, select }) => (
     <p className={`${isSelected ? 'text-success' : 'text-info'} fs-5`} onClick={() => select(link)}>

@@ -1,0 +1,20 @@
+.PillBox {
+    height: 40px;
+    margin: auto;
+    border-width: 1px;
+    border-radius: 5px;
+    border-style: solid;
+    line-height: 35px;
+}
+
+.Left {
+    border-radius: 5px 0px 0px 5px;
+}
+.Right {
+    border-radius: 0px 5px 5px 0px;
+}
+
+.Filled {
+    background-color: rgba(137, 43, 226, 0.501);
+    color: #fff;
+}

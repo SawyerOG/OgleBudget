@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 
 import axios from 'axios';
 import { DateTime } from 'luxon';
@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 import AddItemButton from '../../components/AddItemButton';
 import AddModal from './AddModal';
 import RecentIncome from './RecentIncomes';
+import { AlertContext } from '../../components/Alert/AlertContext';
 
 export interface IncomingIncome {
     ID: number;
@@ -42,6 +43,8 @@ const Incomes = () => {
     const [curIncome, setCurIncome] = useState({ ...incomeObj });
 
     const incomeTypes = useRef({ types: [] as string[], typeIDs: {} as TypeIDs });
+
+    const alert = useContext(AlertContext);
 
     useEffect(() => {
         axios.get('/incomes/getRecentIncomes').then((res) => {
@@ -97,6 +100,7 @@ const Incomes = () => {
                 setCurIncome({ ...incomeObj });
                 setRecentIncomes(c);
                 setSubmitting(false);
+                alert.showAlert('Income Created', 'success');
                 return;
             }
         } catch (err) {
