@@ -9,7 +9,7 @@ import reportWebVitals from './reportWebVitals';
 import AlertContextProvider from './components/Alert/AlertContext';
 
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:4000/api';
+axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
 
 ReactDOM.render(
     <React.StrictMode>
